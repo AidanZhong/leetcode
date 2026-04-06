@@ -49,9 +49,27 @@
 #  
 # 
 #  Related Topics 数组 动态规划 👍 218 👎 0
+import sys
+from functools import cache, lru_cache
+from typing import List
 
 
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
     def minScoreTriangulation(self, values: List[int]) -> int:
+        @cache
+        def dp(i, j):
+            if i + 2 == j:
+                return values[i] * values[i + 1] * values[i + 2]
+            elif i + 2 > j:
+                return 0
+            ans = sys.maxsize
+            for k in range(i + 1, j):
+                ans = min(ans, values[i] * values[k] * values[j] + dp(i, k) + dp(k, j))
+            return ans
+
+        return dp(0, values.__len__() - 1)
+
+
 # leetcode submit region end(Prohibit modification and deletion)
+print(Solution().minScoreTriangulation([3, 7, 4, 5]))
